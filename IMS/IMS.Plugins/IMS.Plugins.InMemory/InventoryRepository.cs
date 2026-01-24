@@ -16,6 +16,18 @@ namespace IMS.Plugins.InMemory
                 new Inventory{Id = Guid.Parse("44ab7b1f-16ec-426f-9bed-6d35da181a06"), Name = "Bike Pedels",Quantity= 20,Price= 1}
             };
         }
+
+        public Task AddInventoryAsync(Inventory inventory)
+        {
+            if(_inventories.Any(i => i.Name.Equals(inventory.Name,StringComparison.OrdinalIgnoreCase)))
+            {
+                return Task.CompletedTask;
+            }
+            inventory.Id = Guid.NewGuid();
+            _inventories.Add(inventory);
+            return Task.CompletedTask;
+        }
+
         public async Task<IEnumerable<Inventory>> GetInventoriesByNameAsync(string name)
         {
             if(string.IsNullOrWhiteSpace(name))
