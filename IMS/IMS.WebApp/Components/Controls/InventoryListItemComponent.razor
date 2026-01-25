@@ -5,7 +5,7 @@
         <td>@inventory.Quantity</td>
         <td>@inventory.Price.ToString("c", new System.Globalization.CultureInfo("en-US"))</td>
         <td>
-            <button type="button" class="btn btn-primary">Edit</button>
+            <a class="btn btn-primary" href="/editinventory/@inventory.Id">Edit</a>
             @* <button type="button" class="btn btn-danger">Delete</button> *@
         </td>
     </tr>

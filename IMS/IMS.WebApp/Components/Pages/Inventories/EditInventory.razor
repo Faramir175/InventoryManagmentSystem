@@ -1,0 +1,54 @@
+﻿@page "/editinventory/{invId:guid}"
+@inject IEditInventoryUseCase EditInventoryUseCase
+@inject IViewInventoryByIdUseCase ViewInventoryByIdUseCase
+@inject NavigationManager NavigationManager
+
+<h3>Add Inventory</h3>
+<br />
+@if (editInventory is not null)
+{
+    <EditForm Model="editInventory" FormName="formInventory" OnValidSubmit="Update">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group mb-3">
+            <label for="name" class="form-label">Name</label>
+            <InputText id="name" class="form-control" @bind-Value="editInventory.Name" />
+            <ValidationMessage For="@(() => editInventory.Name)" />
+        </div>
+        <div class="form-group mb-3">
+            <label for="quantity" class="form-label">Quantity</label>
+            <InputNumber id="quantity" class="form-control" @bind-Value="editInventory.Quantity" />
+            <ValidationMessage For="@(() => editInventory.Quantity)" />
+        </div>
+        <div class="form-group mb-3">
+            <label for="price" class="form-label">Price</label>
+            <InputNumber id="price" class="form-control" @bind-Value="editInventory.Price" />
+            <ValidationMessage For="@(() => editInventory.Price)" />
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="/inventories" class="btn btn-primary">Cancel</a>
+    </EditForm>
+}
+@code {
+    [Parameter]
+    public Guid invId { get; set; }
+    [SupplyParameterFromForm]
+    private Inventory? editInventory { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        editInventory ??= await ViewInventoryByIdUseCase.ExecuteAsync(invId);
+
+        if(editInventory is null)
+        {
+            NavigationManager.NotFound();
+        }
+    }
+    private async Task Update()
+    {
+        editInventory.Id = invId;
+        await EditInventoryUseCase.ExecuteAsync(editInventory);
+
+        NavigationManager.NavigateTo("/inventories");
+    }
+}
