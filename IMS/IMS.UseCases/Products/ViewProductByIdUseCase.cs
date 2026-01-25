@@ -16,9 +16,9 @@ namespace IMS.UseCases.Inventories
             _productRep = productRep;
         }
 
-        public async Task<Product> ExecuteAsync(Guid invId)
+        public async Task<Product> ExecuteAsync(Guid prodId)
         {
-            return await _productRep.GetProductByIdAsync(invId);
+            return await _productRep.GetProductByIdAsync(prodId);
         }
     }
 }

@@ -51,6 +51,7 @@ namespace IMS.Plugins.InMemory
                 existingProduct.Name = product.Name;
                 existingProduct.Quantity = product.Quantity;
                 existingProduct.Price = product.Price;
+                existingProduct.ProductInventories = product.ProductInventories;
             }
 
             return Task.CompletedTask;
@@ -65,9 +66,41 @@ namespace IMS.Plugins.InMemory
             return _products.Where(i => i.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
         }
 
-        public async Task<Product?> GetProductByIdAsync(Guid invId)
+        public async Task<Product?> GetProductByIdAsync(Guid prodId)
         {
-            return await Task.FromResult(_products.FirstOrDefault(i => i.Id.Equals(invId)));
+            var prod = await Task.FromResult(_products.FirstOrDefault(i => i.Id.Equals(prodId)));
+            var newProd = new Product();
+            if(prod != null)
+            {
+                newProd.Id = prod.Id;
+                newProd.Name = prod.Name;
+                newProd.Price = prod.Price;
+                newProd.Quantity = prod.Quantity;
+                newProd.ProductInventories = new List<ProductInventory>();
+                if(prod.ProductInventories != null && prod.ProductInventories.Count > 0)
+                {
+                    foreach(var pi in prod.ProductInventories)
+                    {
+                        var newPi = new ProductInventory
+                        {
+                            InventoryId = pi.InventoryId,
+                            ProductId = pi.ProductId,
+                            Quantity = pi.Quantity,
+                            Inventory = new Inventory(),
+                            Product = prod
+                        };
+                        if(pi.Inventory != null)
+                        {
+                            newPi.Inventory.Id = pi.Inventory.Id;
+                            newPi.Inventory.Name = pi.Inventory.Name;
+                            newPi.Inventory.Price = pi.Inventory.Price;
+                            newPi.Inventory.Quantity = pi.Inventory.Quantity;
+                        }
+                        newProd.ProductInventories.Add(newPi);
+                    }
+                }
+            }
+            return await Task.FromResult(newProd);
         }
     }
 }
