@@ -29,6 +29,16 @@ namespace IMS.Plugins.InMemory
             return Task.CompletedTask;
         }
 
+        public Task DeleteInventoryByIdAsync(Guid invId)
+        {
+            var inventory = _inventories.FirstOrDefault(i => i.Id == invId);
+            if (inventory != null)
+            {
+                _inventories.Remove(inventory);
+            }
+            return Task.CompletedTask;
+        }
+
         public Task EditInventoryAsync(Inventory inventory)
         {
             if(_inventories.Any(i => i.Id != inventory.Id && i.Name.Equals(inventory.Name, StringComparison.OrdinalIgnoreCase)))
