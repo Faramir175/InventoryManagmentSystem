@@ -23,10 +23,10 @@
 
 @code {
     [Parameter]
-    public string? searhInventoryFilter { get; set; }
+    public string? searchInventoryFilter { get; set; }
     private List<Inventory>? inventories;
     protected override async Task OnParametersSetAsync()
     {
-        inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync(searhInventoryFilter ?? string.Empty)).ToList();
+        inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync(searchInventoryFilter ?? string.Empty)).ToList();
     }
 }
