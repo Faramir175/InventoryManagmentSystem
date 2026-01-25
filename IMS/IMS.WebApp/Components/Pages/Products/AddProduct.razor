@@ -1,0 +1,40 @@
+﻿@page "/addproduct"
+@inject IAddProductUseCase AddProductUseCase
+@inject NavigationManager NavigationManager
+
+<h3>Add product</h3>
+<br />
+
+<EditForm Model="newProduct" FormName="formProduct" OnValidSubmit="Save">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group mb-3">
+        <label for="name" class="form-label">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="newProduct.Name" />
+        <ValidationMessage For="@(() => newProduct.Name)" />
+    </div>
+    <div class="form-group mb-3">
+        <label for="quantity" class="form-label">Quantity</label>
+        <InputNumber id="quantity" class="form-control" @bind-Value="newProduct.Quantity" />
+        <ValidationMessage For="@(() => newProduct.Quantity)" />
+    </div>
+    <div class="form-group mb-3">
+        <label for="price" class="form-label">Price</label>
+        <InputNumber id="price" class="form-control" @bind-Value="newProduct.Price" />
+        <ValidationMessage For="@(() => newProduct.Price)" />
+    </div>
+    <button type="submit" class="btn btn-primary">Add Product</button>
+    <a href="/inventories" class="btn btn-primary">Cancel</a>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private Product newProduct { get; set; } = new Product();
+
+    private async Task Save()
+    {
+        await AddProductUseCase.ExecuteAsync(newProduct);
+
+        NavigationManager.NavigateTo("/products");
+    }
+}
