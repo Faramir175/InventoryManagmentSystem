@@ -31,6 +31,7 @@ builder.Services.AddSingleton<IInventoryTransactionRepository, InventoryTransact
 builder.Services.AddTransient<IPurchaseInventoryUseCase, PurchaseInventoryUseCase>();
 
 builder.Services.AddSingleton<IProductTransactionRepository, ProductTransactionRepository>();
+builder.Services.AddTransient<ISellProductUseCase, SellProductUseCase>();
 builder.Services.AddTransient<IProduceProductUseCase, ProduceProductUseCase>();
 
 var app = builder.Build();

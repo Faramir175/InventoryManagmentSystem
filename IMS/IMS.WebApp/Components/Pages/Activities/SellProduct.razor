@@ -1,22 +1,21 @@
-﻿@page "/produce"
+﻿@page "/sell"
 @using static IMS.WebApp.Components.Controls.Common.AutoCompleteComponent
+@inject IJSRuntime JSRuntime
 @inject IViewProductsByNameUseCase ViewProductsByNameUseCase
 @inject IViewProductByIdUseCase ViewProductByIdUseCase
-@inject IProduceProductUseCase ProduceProductUseCase
-@inject IJSRuntime JSRuntime
+@inject ISellProductUseCase SellProductUseCase
 
 @rendermode InteractiveServer
 
-<h3>Produce Product</h3>
+<h3>Sell Product</h3>
 <br/>
-
-<EditForm id = "produce-form" Model="produceViewModel" OnValidSubmit="Produce">
+<EditForm id="sell-form" Model="sellViewModel" OnValidSubmit="Sell">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="form-group">
-        <label for="po" class="form-label">Production #</label>
-        <InputText id="po" class="form-control" @bind-Value="produceViewModel.ProductionNumber" />
+        <label for="po" class="form-label">Sale #</label>
+        <InputText id="po" class="form-control" @bind-Value="sellViewModel.SalesOrderNumber" />
     </div>
     <br />
     <div class="card">
@@ -31,14 +30,17 @@
     <br />
     <div class="form-group">
         <label for="qty" class="form-label">Quantity</label>
-        <InputNumber id="qty" class="form-control" @bind-Value="produceViewModel.Quantity" />
+        <InputNumber id="qty" class="form-control" @bind-Value="sellViewModel.Quantity" />
+    </div>
+    <div class="form-group">
+        <label for="price" class="form-label">Unit price</label>
+        <InputNumber id="price" class="form-control" @bind-Value="sellViewModel.Price" />
     </div>
     <br />
-    <button type="submit" class="btn btn-primary">Produce</button>
+    <button type="submit" class="btn btn-primary">Sell</button>
 </EditForm>
-
 @code {
-    private ProduceViewModel produceViewModel = new ProduceViewModel();
+    private SellViewModel sellViewModel = new SellViewModel();
     private Product? selectedProduct = null;
 
     protected override void OnAfterRender(bool firstRender)
@@ -47,7 +49,7 @@
 
         if (firstRender)
         {
-            JSRuntime.InvokeVoidAsync("preventFormSubmission", "produce-form");
+            JSRuntime.InvokeVoidAsync("preventFormSubmission", "sell-form");
         }
     }
 
@@ -62,13 +64,14 @@
     {
         selectedProduct = await ViewProductByIdUseCase.ExecuteAsync(item.Id);
 
-        produceViewModel.ProductId = item.Id;
-        produceViewModel.Product = selectedProduct;
+        sellViewModel.ProductId = item.Id;
+        sellViewModel.Product = selectedProduct;
+        sellViewModel.Price = selectedProduct.Price;
     }
-    private async Task Produce()
+    private async Task Sell()
     {
-        await ProduceProductUseCase.ExecuteAsync(produceViewModel.ProductionNumber, selectedProduct, produceViewModel.Quantity, "Milan");
-        this.produceViewModel = new ProduceViewModel();
+        await SellProductUseCase.ExecuteAsync(sellViewModel.SalesOrderNumber, selectedProduct, sellViewModel.Quantity, sellViewModel.Price, "Milan");
+        this.sellViewModel = new SellViewModel();
         this.selectedProduct = null;
     }
 }
