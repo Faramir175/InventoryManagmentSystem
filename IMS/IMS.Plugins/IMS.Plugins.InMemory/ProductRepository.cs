@@ -6,9 +6,11 @@ namespace IMS.Plugins.InMemory
 {
     public class ProductRepository : IProductRepository
     {
+        private readonly IInventoryRepository _inventoryRepository;
         private List<Product> _products;
-        public ProductRepository()
+        public ProductRepository(IInventoryRepository inventoryRepository)
         {
+            _inventoryRepository = inventoryRepository;
             _products = new List<Product>()
             {
                 new Product{Id = Guid.Parse("74ab7b1f-16ec-426f-9bed-6d35da181a06"), Name = "Bike",Quantity= 10,Price= 150},
@@ -68,10 +70,12 @@ namespace IMS.Plugins.InMemory
 
         public async Task<Product?> GetProductByIdAsync(Guid prodId)
         {
-            var prod = await Task.FromResult(_products.FirstOrDefault(i => i.Id.Equals(prodId)));
-            var newProd = new Product();
+            var prod = _products.FirstOrDefault(i => i.Id == prodId);
+            Product? newProd = null ;
             if(prod != null)
             {
+                newProd = new Product();
+
                 newProd.Id = prod.Id;
                 newProd.Name = prod.Name;
                 newProd.Price = prod.Price;
@@ -91,10 +95,15 @@ namespace IMS.Plugins.InMemory
                         };
                         if(pi.Inventory != null)
                         {
-                            newPi.Inventory.Id = pi.Inventory.Id;
-                            newPi.Inventory.Name = pi.Inventory.Name;
-                            newPi.Inventory.Price = pi.Inventory.Price;
-                            newPi.Inventory.Quantity = pi.Inventory.Quantity;
+                            var inv = await _inventoryRepository.GetInventoryByIdAsync(pi.Inventory.Id);
+
+                            if (inv is not null)
+                            {
+                                newPi.Inventory.Id = inv.Id;
+                                newPi.Inventory.Name = inv.Name;
+                                newPi.Inventory.Price = inv.Price;
+                                newPi.Inventory.Quantity = inv.Quantity;
+                            }
                         }
                         newProd.ProductInventories.Add(newPi);
                     }

@@ -5,25 +5,25 @@ using System.Text;
 
 namespace IMS.Core
 {
-    public class InventoryTransaction
+    public class ProductionTransaction
     {
         public Guid Id { get; set; }
         [Required]
-        public Guid InventoryId { get; set; }
+        public Guid ProductId { get; set; }
         [Required]
         public int QuantityBefore { get; set; }
         [Required]
         public int QuantityAfter { get; set; }
-        public InventoryTransactionType ActivityType { get; set; }
-        public decimal UnitPrice { get; set; }
-        public string PONumber { get; set; } = String.Empty;
+        public ProductTransactionType ActivityType { get; set; }
+        public decimal? UnitPrice { get; set; }
+        public string SONumber { get; set; } = String.Empty;
         public string ProductionNumber { get; set; } = String.Empty;
-        [Required]    
+        [Required]
         public string DoneBy { get; set; } = String.Empty;
         [Required]
         public DateTime TransactionDate { get; set; }
 
-        public Inventory? Inventory { get; set; }
+        public Product? Product { get; set; }
 
     }
 }

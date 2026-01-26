@@ -8,5 +8,6 @@ namespace IMS.UseCases.Interfaces
     public interface IInventoryTransactionRepository
     {
         void PurchaseAsync(string poNumber, Inventory inventory, int quantity, string doneBy, decimal price);
+        Task ProduceAsync(string productionNumber, Inventory inventory, int quantity, string doneBy);
     }
 }
