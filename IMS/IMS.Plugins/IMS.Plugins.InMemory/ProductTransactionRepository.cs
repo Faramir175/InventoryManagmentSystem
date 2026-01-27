@@ -31,7 +31,7 @@ namespace IMS.Plugins.InMemory
                     if(pi.Inventory is not null)
                     {
                         // add inventory transaction for each inventory used in production
-                        _inventoryTransactionRepository.ProduceAsync(productionNumber, pi.Inventory, pi.Quantity * quantity, doneBy);
+                        await _inventoryTransactionRepository.ProduceAsync(productionNumber, pi.Inventory, pi.Quantity * quantity, doneBy, -1);
 
                         var inv = await _inventoryRepository.GetInventoryByIdAsync(pi.InventoryId);
                         inv.Quantity -= pi.Quantity * quantity;

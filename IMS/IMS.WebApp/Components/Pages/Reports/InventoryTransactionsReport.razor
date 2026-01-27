@@ -1,0 +1,90 @@
+﻿@page "/inventory-transactions-report"
+
+@inject ISearchInventoryTransactionUseCase SearchInventoryTransactionUseCase
+@rendermode InteractiveServer
+
+<h3>Inventory Transactions</h3>
+<br/>
+
+<div class="row">
+    <div class="col">
+        <label for="inv">Inventory Name</label>
+        <input type="text" id="inv" class="form-control" @bind-value="invName"/>
+    </div>
+    <div class="col">
+        <label for="df">Date From</label>
+        <input type="date" id="df" class="form-control" @bind-value="dateFrom" />
+    </div>
+    <div class="col">
+        <label for="dt">Date To</label>
+        <input type="date" id="dt" class="form-control" @bind-value="dateTo" />
+    </div>
+    <div class="col">
+        <label for="at">Activity Type</label>
+        <select id="at" class="form-control" @bind="activityTypeId">
+            <option value="0">All</option>
+            <option value="1">Purchase inventory</option>
+            <option value="2">Produce inventory</option>
+        </select>
+    </div>
+    <div class="col">
+        <label>&nbsp;</label>
+        <button type="button" class="btn btn-primary form-control" @onclick="SearchInventories">Search</button>
+    </div>
+</div>
+
+@if (inventoryTransactions != null && inventoryTransactions.Count() > 0)
+{
+    <br/>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Inventory</th>
+                <th>Activity</th>
+                <th>Qty Before</th>
+                <th>Qty After</th>
+                <th>PO#</th>
+                <th>Production #</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in inventoryTransactions)
+            {
+                <tr>
+                    <td>@transaction.TransactionDate.ToString("yyyy-MM-dd")</td>
+                    <td>@transaction.Inventory.Name</td>
+                    <td>
+                        @if (transaction.ActivityType == InventoryTransactionType.PurchaseInventory)
+                        {
+                            <text>Purchase</text>
+                        }
+                        @if (transaction.ActivityType == InventoryTransactionType.ProduceProduct)
+                        {
+                            <text>Produce</text>
+                        }
+                    </td>
+                    <td>@transaction.QuantityBefore</td>
+                    <td>@transaction.QuantityAfter</td>
+                    <td>@transaction.PONumber</td>
+                    <td>@transaction.ProductionNumber</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private string invName;
+    private DateTime? dateFrom;
+    private DateTime? dateTo;
+    private int activityTypeId;
+    private IEnumerable<InventoryTransaction>? inventoryTransactions;
+
+    private async Task SearchInventories()
+    {
+        InventoryTransactionType? activityType = null;
+        if (activityTypeId != 0) activityType = (InventoryTransactionType)activityTypeId;
+        inventoryTransactions = await SearchInventoryTransactionUseCase.ExecuteAsync(invName,dateFrom,dateTo,activityType);
+    }
+}
