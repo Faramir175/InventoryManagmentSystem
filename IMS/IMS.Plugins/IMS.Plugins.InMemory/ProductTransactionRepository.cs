@@ -21,6 +21,36 @@ namespace IMS.Plugins.InMemory
             _inventoryTransactionRepository = inventoryTransactionRepository;
             _inventoryRepository = inventoryRepository;
         }
+
+        public async Task<IEnumerable<ProductionTransaction>> GetProductTransactionsAsync(string invName, DateTime? dateForm, DateTime? dateTo, ProductTransactionType? transactionType)
+        {
+            var products = (await _productRepository.GetProductsByNameAsync(string.Empty)).ToList();
+
+            var query = from it in this._productionTransactions
+                        join inv in products on it.ProductId equals inv.Id
+                        where
+                            (string.IsNullOrWhiteSpace(invName) || inv.Name.ToLower().IndexOf(invName.ToLower()) >= 0)
+                            &&
+                            (!dateForm.HasValue || it.TransactionDate >= dateForm.Value.Date) &&
+                            (!dateTo.HasValue || it.TransactionDate <= dateTo.Value.Date) &&
+                            (!transactionType.HasValue || it.ActivityType == transactionType)
+                        select new ProductionTransaction
+                        {
+                            Id = it.Id,
+                            ProductId = it.ProductId,
+                            QuantityBefore = it.QuantityBefore,
+                            QuantityAfter = it.QuantityAfter,
+                            ActivityType = it.ActivityType,
+                            UnitPrice = it.UnitPrice,
+                            SONumber = it.SONumber,
+                            ProductionNumber = it.ProductionNumber,
+                            DoneBy = it.DoneBy,
+                            TransactionDate = it.TransactionDate,
+                            Product = inv
+                        };
+            return query;
+        }
+
         public async Task ProduceAsync(string productionNumber, Product product, int quantity, string doneBy)
         {
             var prod = await _productRepository.GetProductByIdAsync(product.Id);
