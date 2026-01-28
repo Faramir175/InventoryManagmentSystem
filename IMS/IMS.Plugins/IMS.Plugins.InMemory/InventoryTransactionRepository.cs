@@ -61,7 +61,7 @@ namespace IMS.Plugins.InMemory
             return Task.CompletedTask;
         }
 
-        public void PurchaseAsync(string poNumber, Inventory inventory, int quantity, string doneBy, decimal price)
+        public Task PurchaseAsync(string poNumber, Inventory inventory, int quantity, string doneBy, decimal price)
         {
             _inventoryTransactions.Add(new InventoryTransaction
             {
@@ -75,6 +75,7 @@ namespace IMS.Plugins.InMemory
                 PONumber = poNumber,
                 TransactionDate = DateTime.UtcNow
             });
+            return Task.CompletedTask;
         }
     }
 }

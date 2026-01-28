@@ -15,7 +15,14 @@
         {
             foreach (var inventory in inventories)
             {
-                <InventoryListItemComponent inventory="inventory"></InventoryListItemComponent>
+                var inv = new Inventory
+                {
+                    Id = inventory.Id,
+                    Name = inventory.Name,
+                    Price = inventory.Price,
+                    Quantity = inventory.Quantity
+                };
+                <InventoryListItemComponent inventory="inv"></InventoryListItemComponent>
             }
         }
     </tbody>

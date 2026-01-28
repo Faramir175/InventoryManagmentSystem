@@ -8,9 +8,9 @@ namespace IMS.UseCases.Interfaces
     public interface IProductRepository
     {
         Task AddProductAsync(Product product);
-        Task DeleteProductByIdAsync(Guid invId);
+        Task DeleteProductByIdAsync(Guid prodId);
         Task EditProductAsync(Product product);
-        Task<Product?> GetProductByIdAsync(Guid invId);
+        Task<Product?> GetProductByIdAsync(Guid prodId);
         Task<IEnumerable<Product>> GetProductsByNameAsync(string name);
     }
 }
