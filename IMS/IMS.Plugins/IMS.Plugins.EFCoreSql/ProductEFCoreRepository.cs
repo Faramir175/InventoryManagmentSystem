@@ -11,9 +11,9 @@ namespace IMS.Plugins.EFCoreSql
 {
     public class ProductEFCoreRepository : IProductRepository
     {
-        private readonly DbContextFactory<IMSContext> contextFactory;
+        private readonly IDbContextFactory<IMSContext> contextFactory;
 
-        public ProductEFCoreRepository(DbContextFactory<IMSContext> contextFactory)
+        public ProductEFCoreRepository(IDbContextFactory<IMSContext> contextFactory)
         {
             this.contextFactory = contextFactory;
         }

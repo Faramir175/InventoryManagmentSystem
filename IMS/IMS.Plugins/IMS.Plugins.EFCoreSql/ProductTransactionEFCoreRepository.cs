@@ -10,12 +10,12 @@ namespace IMS.Plugins.EFCoreSql
 {
     public class ProductTransactionEFCoreRepository : IProductTransactionRepository
     {
-        private readonly DbContextFactory<IMSContext> contextFactory;
+        private readonly IDbContextFactory<IMSContext> contextFactory;
         private readonly IProductRepository _productRepository;
         private readonly IInventoryTransactionRepository _inventoryTransactionRepository;
         private readonly IInventoryRepository _inventoryRepository;
 
-        public ProductTransactionEFCoreRepository(DbContextFactory<IMSContext> contextFactory, 
+        public ProductTransactionEFCoreRepository(IDbContextFactory<IMSContext> contextFactory, 
             IProductRepository productRepository, IInventoryTransactionRepository inventoryTransactionRepository,
             IInventoryRepository inventoryRepository)
         {
