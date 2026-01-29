@@ -61,7 +61,7 @@
         if(item!=null)
         {
             selectedItem = item;
-            userInput = item?.Name ?? string.Empty;
+            _userInput = item?.Name ?? string.Empty;
             searchResults = null;
             OnItemSelected.InvokeAsync(item);
         }
